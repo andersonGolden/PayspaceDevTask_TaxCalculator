@@ -1,0 +1,137 @@
+﻿@model TaxCalculator.Models.TaxCalculatorViewModel
+@{
+    ViewData["Title"] = "Compute Tax";
+}
+<style>
+    table {
+        margin: 0 auto; 
+    }
+    th {
+        text-align: center;
+        
+    }
+    table, th, td {
+        border: 3px ridge;
+        padding: 5px;
+    }
+    .centered-divs {
+        display: flex;
+        justify-content: center;
+    }
+
+    .input-group {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        width: 60%; 
+    }
+
+    .input-group div {
+            margin-right: 20px; 
+        }
+
+    button {
+        margin: 20px;
+    }
+</style>
+@using (Html.BeginForm("ComputeTax", "Home", FormMethod.Post))
+{
+    <div class="text-center">
+        <h1 class="display-4">Income Tax Calculator</h1>
+    </div>
+    <div class="centered-divs">
+        <div class="input-group">
+            <div>
+                @Html.LabelFor(model => model.request.annualIncome)
+                @Html.TextBoxFor(model => model.request.annualIncome, new { @class = "numeric-input" })
+            </div>
+            <div>
+                @Html.LabelFor(model => model.request.postalCode)
+                @Html.TextBoxFor(model => model.request.postalCode)
+            </div>
+        </div>
+    </div>
+    <div class="text-center">
+        @{
+            var computeResult = TempData["ComputeMessage"] as string;
+            if (!string.IsNullOrEmpty(computeResult))
+            {
+                <h4> @computeResult</h4>
+            }
+         }
+    </div>
+    <div class="text-center">
+        <button type="submit">Compute Tax</button>
+    </div>
+}
+<div class="text-center">
+    <table>
+        <tr>
+            <th>Annual Income</th>
+            <th>Postal Code</th>
+            <th>Calculation Type</th>
+            <th>Tax Amount</th>
+            <th>Compute Date</th>
+            <th>Action</th>
+        </tr>
+        @{
+            if(!Model.rates.Any())
+            {
+                <tr> No records available at this time</tr>
+            }else{
+                foreach (var rate in Model.rates)
+                {
+                    <tr>
+                        <td>@rate.AnnualIncome</td>
+                        <td>@rate.PostalCode</td>
+                        <td>@rate.CalculationType</td>
+                        <td>@rate.Amount</td>
+                        <td>@rate.CreatedOn.ToString()</td>
+                        <td>
+                            <i class="fa fa-trash delete-icon" data-id="@rate.Id" aria-hidden="true"></i>
+                        </td>
+                    </tr>
+                }
+            }
+        }
+    </table>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Delete record when the bin icon is clicked
+        $(".delete-icon").on("click", function () {
+            var id = $(this).data("id"); // Get the record ID from data attribute
+            var confirmation = confirm("Are you sure you want to delete this record?");
+
+            if (confirmation) {
+                $.ajax({
+                    url: '/Home/DeleteRate/' + id,
+                    type: 'POST', 
+                    success: function (result) {
+                        // Handle success - reload grid
+                        if (result.success) {
+                            location.reload();
+                        } else {
+                            alert('Failed to delete the record.');
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while processing the request.');
+                    }
+                });
+            }
+        });
+
+        $('.numeric-input').keypress(function (event) {
+            var charCode = event.which ? event.which : event.keyCode;
+
+            // Allow only digits (0-9) and certain special keys like Backspace, Delete, etc.
+            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+            return true;
+        });
+    });
+
+</script>
