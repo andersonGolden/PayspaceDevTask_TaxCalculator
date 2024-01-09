@@ -1,0 +1,32 @@
+﻿table {
+    margin: 0 auto;
+}
+
+th {
+    text-align: center;
+}
+
+table, th, td {
+    border: 3px ridge;
+    padding: 5px;
+}
+
+.centered-divs {
+    display: flex;
+    justify-content: center;
+}
+
+.input-group {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 60%;
+}
+
+    .input-group div {
+        margin-right: 20px;
+    }
+
+button {
+    margin: 20px;
+}

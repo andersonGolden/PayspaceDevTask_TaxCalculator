@@ -2,38 +2,7 @@
 @{
     ViewData["Title"] = "Compute Tax";
 }
-<style>
-    table {
-        margin: 0 auto; 
-    }
-    th {
-        text-align: center;
-        
-    }
-    table, th, td {
-        border: 3px ridge;
-        padding: 5px;
-    }
-    .centered-divs {
-        display: flex;
-        justify-content: center;
-    }
-
-    .input-group {
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        width: 60%; 
-    }
-
-    .input-group div {
-            margin-right: 20px; 
-        }
-
-    button {
-        margin: 20px;
-    }
-</style>
+<link href="~/css/index.css" rel="stylesheet" />
 @using (Html.BeginForm("ComputeTax", "Home", FormMethod.Post))
 {
     <div class="text-center">
@@ -97,41 +66,4 @@
     </table>
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function () {
-        // Delete record when the bin icon is clicked
-        $(".delete-icon").on("click", function () {
-            var id = $(this).data("id"); // Get the record ID from data attribute
-            var confirmation = confirm("Are you sure you want to delete this record?");
-
-            if (confirmation) {
-                $.ajax({
-                    url: '/Home/DeleteRate/' + id,
-                    type: 'POST', 
-                    success: function (result) {
-                        // Handle success - reload grid
-                        if (result.success) {
-                            location.reload();
-                        } else {
-                            alert('Failed to delete the record.');
-                        }
-                    },
-                    error: function () {
-                        alert('An error occurred while processing the request.');
-                    }
-                });
-            }
-        });
-
-        $('.numeric-input').keypress(function (event) {
-            var charCode = event.which ? event.which : event.keyCode;
-
-            // Allow only digits (0-9) and certain special keys like Backspace, Delete, etc.
-            if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-                return false;
-            }
-            return true;
-        });
-    });
-
-</script>
+<script src="~/js/index.js"></script>
